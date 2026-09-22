@@ -7,7 +7,7 @@
 1. Clonar el Proyecto
 
 2.  ```
-    nmp install
+    npm install
     ```
 
 3. Clonar el archivo ```.env.template``` y reenombralo a ```.env```

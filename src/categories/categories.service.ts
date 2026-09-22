@@ -1,26 +1,59 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Category } from './entities/category.entity';
+import { Repository } from 'typeorm';
+import { DataSource } from 'typeorm/browser';
+
 
 @Injectable()
 export class CategoriesService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  // para el manejo de errore
+  private readonly logger = new Logger('CategoryService')
+
+  //patron repositorio en el constructor
+  constructor(
+    @InjectRepository(Category)
+    private readonly categoryRepository : Repository<Category>
+  ){}
+
+ 
+
+
+
+
+
+  async create(createCategoryDto: CreateCategoryDto) {
+    try {
+      //desestructuramos el details
+    const {name} = createCategoryDto
+    const category = this.categoryRepository.create({name})
+
+    //guardamos en la base de datos
+    await this.categoryRepository.save(category)
+
+    //retornamos la categoria
+    console.log(category)
+    return category
+
+    } catch (error) {
+      this.handleDBExpections
+    }
+  }  
+
+  
+  //metodo privado para manejo de errores 
+  private handleDBExpections(error:any){
+    if(error.code === '23505'){
+        throw new BadRequestException(error.detail)
+      }
+      //llamamos al logger
+      this.logger.error(error)
+      throw new InternalServerErrorException('Uniexpected error, check server')
+    
   }
 
-  findAll() {
-    return `This action returns all categories`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
-  }
 }
