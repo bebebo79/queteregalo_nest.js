@@ -8,9 +8,9 @@ export class Category {
 
     //ID primary key
     @PrimaryGeneratedColumn('uuid')
-    id?:string
+    id!:string
 
     //nombre de la categoria
     @Column('text', {unique:true})
-    name? : string
+    name!: string
 }

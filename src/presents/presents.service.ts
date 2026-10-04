@@ -1,15 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreatePresentDto } from './dto/create-present.dto';
 import { UpdatePresentDto } from './dto/update-present.dto';
+import { Present } from './entities/present.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PresentsService {
-  create(createPresentDto: CreatePresentDto) {
-    return 'This action adds a new present';
+  // para el manejo de errore
+  private readonly logger =  new Logger('PresentService')
+
+  //patron repositorio en el constructor
+  constructor(
+    @InjectRepository(Present)
+    private readonly presentRepository : Repository<Present>
+  ){}
+
+
+  async create(createPresentDto: CreatePresentDto) {
+    try{
+      const {description, option} = createPresentDto
+      const present = this.presentRepository.create({description,option})
+
+      //guardamos en la base de datos
+      await this.presentRepository.save(present)
+
+      //retornamos present
+      return present;
+    } catch(error){
+      this.handleDBExpections(error)
+    }
   }
 
-  findAll() {
-    return `This action returns all presents`;
+
+
+  async findAll() {
+    const presents =  await this.presentRepository.find()
+    
+    return presents;
   }
 
   findOne(id: number) {
@@ -23,4 +51,21 @@ export class PresentsService {
   remove(id: number) {
     return `This action removes a #${id} present`;
   }
+
+ 
+  //metodo privado para manejo de errores 
+  private handleDBExpections(error:any){
+    if(error.code === '23505'){
+        throw new BadRequestException(error.detail)
+      }
+      //llamamos al logger
+      this.logger.error(error)
+      throw new InternalServerErrorException('Uniexpected error, check server')
+    
+  }
+
 }
+
+
+
+

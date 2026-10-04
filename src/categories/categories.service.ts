@@ -3,7 +3,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
-import { DataSource } from 'typeorm/browser';
+
 
 
 @Injectable()
@@ -19,10 +19,6 @@ export class CategoriesService {
 
  
 
-
-
-
-
   async create(createCategoryDto: CreateCategoryDto) {
     try {
       //desestructuramos el details
@@ -33,11 +29,10 @@ export class CategoriesService {
     await this.categoryRepository.save(category)
 
     //retornamos la categoria
-    console.log(category)
     return category
 
     } catch (error) {
-      this.handleDBExpections
+      this.handleDBExpections(error)
     }
   }  
 
