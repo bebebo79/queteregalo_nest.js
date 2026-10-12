@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { PresentOption } from "./present.option.entity";
+import { User } from "src/auth/entities/user.entity";
 
 
 
@@ -22,4 +23,11 @@ export class Present {
         default: PresentOption.DESEABLE
     })
     option!: PresentOption
+
+    // relacionamos el producto con un usuario
+    @ManyToOne(
+        ()=> User,
+        (user) => user.present,
+        {eager: true} //traer los productos
+    ) user? : User
 }
