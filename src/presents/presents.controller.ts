@@ -1,15 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { PresentsService } from './presents.service';
 import { CreatePresentDto } from './dto/create-present.dto';
 import { UpdatePresentDto } from './dto/update-present.dto';
+import { User } from 'src/auth/entities/user.entity';
+import { Auth, GetUser } from 'src/auth/decorators';
 
 @Controller('presents')
 export class PresentsController {
-  constructor(private readonly presentsService: PresentsService) {}
+  constructor(
+    private readonly presentsService: PresentsService
+  ) {}
 
   @Post()
-  create(@Body() createPresentDto: CreatePresentDto) {
-    return this.presentsService.create(createPresentDto);
+  @Auth()
+  create(
+    @Body() createPresentDto: CreatePresentDto,
+    @GetUser() user : User    
+  ) {
+    return this.presentsService.create(createPresentDto, user);
   }
 
   @Get()

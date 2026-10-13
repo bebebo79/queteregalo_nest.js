@@ -4,6 +4,7 @@ import { UpdatePresentDto } from './dto/update-present.dto';
 import { Present } from './entities/present.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class PresentsService {
@@ -17,16 +18,15 @@ export class PresentsService {
   ){}
 
 
-  async create(createPresentDto: CreatePresentDto) {
+  async create(createPresentDto: CreatePresentDto, user: User) {
     try{
-      const {description, option} = createPresentDto
-      const present = this.presentRepository.create({description,option})
-
+      const {description,option} = createPresentDto
+      const present = this.presentRepository.create({description,option,user})
       //guardamos en la base de datos
       await this.presentRepository.save(present)
 
       //retornamos present
-      return present;
+      return {present, user: user.id};
     } catch(error){
       this.handleDBExpections(error)
     }

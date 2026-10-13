@@ -49,10 +49,6 @@ export class User {
         this.email = this.email.toLowerCase().trim()
     }
 
-    //antes de actualizar pasar a min. el mail
-    @BeforeUpdate()
-    checkFiledsBeforeUpdate(){
-        this.email =  this.email.toLocaleLowerCase().trim()
-    }
+   
 
 }

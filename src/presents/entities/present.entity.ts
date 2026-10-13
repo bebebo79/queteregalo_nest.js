@@ -13,7 +13,7 @@ export class Present {
     id!:string
 
     //descripcion
-    @Column('text', {unique:true})
+    @Column('text')
     description!: string
 
     //opciones
