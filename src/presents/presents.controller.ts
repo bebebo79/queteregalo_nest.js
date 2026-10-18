@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { PresentsService } from './presents.service';
 import { CreatePresentDto } from './dto/create-present.dto';
 import { UpdatePresentDto } from './dto/update-present.dto';
@@ -21,7 +21,7 @@ export class PresentsController {
   ) {
     return this.presentsService.create(createPresentDto, user);
   }
-45
+
   @Get()
   findAll() {
     return this.presentsService.findAll();
@@ -34,8 +34,12 @@ export class PresentsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePresentDto: UpdatePresentDto) {
-    return this.presentsService.update(+id, updatePresentDto);
+  @Auth()
+  update(
+    @Param('id', ParseUUIDPipe) id: string, 
+    @Body() updatePresentDto: UpdatePresentDto,
+    @GetUser() user : User) {
+    return this.presentsService.update(id, updatePresentDto, user);
   }
 
   @Delete(':id')
