@@ -43,7 +43,10 @@ export class PresentsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.presentsService.remove(+id);
+  @Auth()
+  remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @GetUser() user: User){
+    return this.presentsService.remove(id, user);
   }
 }

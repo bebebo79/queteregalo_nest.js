@@ -108,8 +108,18 @@ export class PresentsService {
         
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} present`;
+  async remove(id: string, user:User) {
+    const present = await this.presentRepository.findOne({
+      where: {id},
+      relations : {user:true}
+    })
+    //validamos present
+    if(!present) throw new NotFoundException(`El regalo con id: ${id} no existe`)
+    //validamos user
+    if(present.user.id !== user.id) throw new ForbiddenException(`El usuario con id ${user.id} no puede eliminar este regalo`)
+        
+    await this.presentRepository.remove(present)
+    return `Regalo con id: ${id} ha sido eliminado`
   }
 
  
