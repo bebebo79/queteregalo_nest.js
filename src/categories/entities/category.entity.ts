@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+
+import { Present } from "src/presents/entities/present.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 //tabla para la base de datos
@@ -13,4 +15,9 @@ export class Category {
     //nombre de la categoria
     @Column('text', {unique:true})
     name!: string
+
+    // relacion de una categoria por regalo
+    @OneToMany(() => Present, (present) => present.category)
+    presents!: Present[]
+
 }

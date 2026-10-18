@@ -1,5 +1,6 @@
-import { IsEnum, IsString, MinLength } from "class-validator";
+import { IsEnum, IsString, IsUUID, MinLength } from "class-validator";
 import { PresentOption } from "../entities/present.option.entity";
+import { Category } from "src/categories/entities/category.entity";
 
 export class CreatePresentDto {
 
@@ -9,6 +10,11 @@ export class CreatePresentDto {
 
     @IsEnum(PresentOption)
     option! : PresentOption
+
+    @IsUUID()
+    categoryId!: string
+
+   
 
 
 

@@ -5,6 +5,7 @@ import { UpdatePresentDto } from './dto/update-present.dto';
 import { User } from 'src/auth/entities/user.entity';
 import { Auth, GetUser } from 'src/auth/decorators';
 
+
 @Controller('presents')
 export class PresentsController {
   constructor(
@@ -14,20 +15,22 @@ export class PresentsController {
   @Post()
   @Auth()
   create(
-    @Body() createPresentDto: CreatePresentDto,
-    @GetUser() user : User    
+    @Body() 
+    createPresentDto: CreatePresentDto, 
+    @GetUser() user : User,
   ) {
     return this.presentsService.create(createPresentDto, user);
   }
-
+45
   @Get()
   findAll() {
     return this.presentsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.presentsService.findOne(+id);
+  @Get(':userId')
+  @Auth()
+  findOne(@Param('userId') userId: string) {
+    return this.presentsService.findByUserId(userId);
   }
 
   @Patch(':id')

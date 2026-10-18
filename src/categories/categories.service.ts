@@ -18,7 +18,8 @@ export class CategoriesService {
   ){}
 
  
-
+  //CREAR CATEGORY 
+  //TODO: poner solo al admin
   async create(createCategoryDto: CreateCategoryDto) {
     try {
       //desestructuramos el details
@@ -34,7 +35,13 @@ export class CategoriesService {
     } catch (error) {
       this.handleDBExpections(error)
     }
-  }  
+  } 
+  
+  async findAll(){
+    const categories = await this.categoryRepository.find()
+
+    return categories
+  }
 
   
   //metodo privado para manejo de errores 
