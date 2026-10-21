@@ -13,6 +13,22 @@ Este repositorio es la migración del backend original (Node.js + Express) a **N
  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
+## Stack
+
+- NestJS + TypeScript
+- PostgreSQL + TypeORM
+- Autenticación con JWT
+- Docker (base de datos)
+
+## Módulos
+
+- **Auth**: registro y login de usuarios
+- **Profile**: perfil público del usuario (tallas, gustos), con búsqueda por nombre
+- **Categories**: categorías de regalos
+- **Presents**: regalos creados por cada usuario, filtrables por usuario
+
+## Como levantarlo
+
 1. Clonar el Proyecto
 
 2.  ```
