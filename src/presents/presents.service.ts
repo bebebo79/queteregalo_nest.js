@@ -26,6 +26,7 @@ export class PresentsService {
   async create(createPresentDto: CreatePresentDto, user: User) {
     try{
       const {categoryId, ...presentData} = createPresentDto
+
       const category  =await this.categoryRepository.findOne({where:{id : categoryId}})
       // comprobar que la categoria existe
       if(!category) throw new BadRequestException(`Categoría con id ${categoryId} no es valida`)
@@ -77,11 +78,11 @@ export class PresentsService {
     })
     //VALIDACIONES
     //validamos que el regalo exista
-    if(!presentExist) throw new NotFoundException(`el regalo con id  ${id} no existe`)
+    if(!presentExist) throw new NotFoundException(`El regalo con id  ${id} no existe`)
     // validamos que el regalo sea del usuario que lo creo
     if(presentExist.user.id !== user.id) throw new ForbiddenException('No puedes editar un regalo que no es tuyo')  
 
-    //crear el present nuevo
+    //crear el regalo nuevo
     const {categoryId, ...toUpdate} = updatePresentDto
 
     const present = await this.presentRepository.preload({
@@ -89,13 +90,13 @@ export class PresentsService {
       ...toUpdate
     })
     
-    if(!present) throw new NotFoundException(`el regalo con ${id} no existe`)
+    if(!present) throw new NotFoundException(`El regalo con ${id} no existe`)
 
     if(categoryId){
       const category = await this.categoryRepository.findOne({
         where : {id:categoryId}
       })
-      if(!category) throw new NotFoundException(`la categoria con id  ${categoryId} no es valida`)
+      if(!category) throw new NotFoundException(`La categoría con id  ${categoryId} no es valida`)
       present.category = category  
     }
     

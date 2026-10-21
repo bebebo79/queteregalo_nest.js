@@ -1,5 +1,6 @@
 import { Present } from "src/presents/entities/present.entity";
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Profile } from "src/profile/entities/profile.entity";
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
 
@@ -42,6 +43,13 @@ export class User {
         (present) => present.user
     ) present? :Present
 
+    //Relacion de un perfil por usuario
+    @OneToOne(
+        ()=> Profile,
+        (profile)=> profile.user,
+   
+    )
+    profile!: Profile
 
     //antes de inserter pasar a min. el email
     @BeforeInsert()
