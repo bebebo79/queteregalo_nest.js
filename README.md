@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo.png" width="180" alt="QueTeRegalo Logo" />
+  <img src="/docs/logo.svg" width="180" alt="QueTeRegalo Logo" />
 </p>
 
 # QueTeRegalo - API
