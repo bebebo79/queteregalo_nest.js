@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, ParseUUIDPipe, UnauthorizedException } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -8,6 +8,7 @@ import { CreateUserDto, LoginUserDto } from './dto';
 import { JwtPayload } from './interfaces/jwt.payload.interfaces';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
+import { ResetPasswordDto } from './dto/resetPassword -use.dto';
 
 
 
@@ -44,10 +45,8 @@ export class AuthService {
       await this.mailService.sendConfirmationEmail(user.email, token)
       
       //lo que retorna
-      return {
-        ...userData, 
-        token,
-      }
+      return 'Comprueba tu correo para activar cuenta'
+        
 
     } catch (error) {
       this.handleDBError(error)
@@ -71,12 +70,11 @@ export class AuthService {
     if(!bcrypt.compareSync(password, user.password)) 
       throw new UnauthorizedException('Credentials are not valid (password)')
 
-    return 'Compruba tu correo para confirmar cuenta'
 
-    // return {
-    //   ...user,
-    //   token : this.getJwtToken({id: user.id})
-    // }
+    return {
+      ...user,
+      token : this.getJwtToken({id: user.id})
+    }
 
   }
 
@@ -100,6 +98,54 @@ export class AuthService {
       this.handleDBError(error)
     }
 
+  }
+
+  async forgotPassword(email : string){
+    //consultamos el mail del user
+    const user = await this.userRepository.findOneBy({email})
+    //validaciones
+    if(!user) throw new NotFoundException(' El usuario No encontrado')
+    //que el usuario no este ya activo
+    if(user.isActive === false) return 'El Usuario No esta Confirmado'
+    //dejamos activo el usuario y grabamos los cambios
+
+    //generamos token
+    const token = this.getJwtToken({id : user.id})
+    //mandamos el token
+    await this.mailService.sendPasswordResetEmail(user.email, token)
+
+    //return
+    return 'Comprueba tu correo y sigue las instrucciones'
+
+  }
+
+  async resetPassword(token:string, ResetPasswordDto:ResetPasswordDto){
+     let payload : {id:string}
+     //VALIDAMOS con el payload que el token existe
+     try {
+      payload = this.jWtService.verify(token) //si existe o si ha caducado
+     } 
+    catch(error){
+      throw new UnauthorizedException('El token no es valido')
+    }
+      //VALIDACIONES
+      //que el usuario exista con ese token
+      const user = await this.userRepository.findOneBy({id: payload.id})
+      if(!user) throw new NotFoundException(' El usuario No encontrado')
+      //que el usuario  este ya activo
+      if(user.isActive === false) return 'El Usuario No esta Confirmado'
+      
+      //guardamos el password del body
+      const newPassword = bcrypt.hashSync(ResetPasswordDto.newPassword,10)
+      user.password =  newPassword
+
+      //Grabamos en la base de datos
+      try{
+      await this.userRepository.save(user)
+      return 'Password Cambiado Correctamente'
+      }catch (error) {
+      this.handleDBError(error)
+    }
   }
 
   //metodo para llamar al jwt

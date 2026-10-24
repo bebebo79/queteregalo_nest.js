@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body,  UseGuards, Req, SetMetadata, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body,  UseGuards, Req, SetMetadata, Param, ParseUUIDPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto } from './dto';
+import { CreateUserDto, LoginUserDto, ResetPasswordDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 
 import { User } from './entities/user.entity';
@@ -8,8 +8,7 @@ import { User } from './entities/user.entity';
 import { UseRoleGuard } from './guards/use-role/use-role.guard';
 
 import { ValidateRoles } from './interfaces';
-import { Auth, GetUser, RawHeaders, RoleProtected } from './decorators';
-
+import { Auth, GetUser, RoleProtected } from './decorators';
 
 
 
@@ -39,6 +38,21 @@ export class AuthController {
   confirmAccount(
     @Param('token') token: string){
     return this.authService.confirmAccount(token)
+  }
+
+  @Post('forgot-password')
+  forgotPassword(
+    @Body('email') email: string
+  ){
+    return this.authService.forgotPassword(email)
+  }
+
+  @Post('reset-password/:token')
+  resetPassord(
+    @Param('token') token : string,
+    @Body() ResetPasswordDto : ResetPasswordDto
+  ){
+    return this.authService.resetPassword(token,  ResetPasswordDto)
   }
 
   
