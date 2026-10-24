@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body,  UseGuards, Req, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Body,  UseGuards, Req, SetMetadata, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,7 +9,6 @@ import { UseRoleGuard } from './guards/use-role/use-role.guard';
 
 import { ValidateRoles } from './interfaces';
 import { Auth, GetUser, RawHeaders, RoleProtected } from './decorators';
-import { Express } from 'express';
 
 
 
@@ -32,14 +31,17 @@ export class AuthController {
   @Get('check-auth-status')
   @Auth()
   checkAuthStatus(
-    
-    @GetUser() user : User
-  
-    )
-  {
+    @GetUser() user : User){
     return this.authService.checkAtuhStatus(user)
-      
   }
+
+  @Post('confirm-acount/:token')  // url que se manda desde el mail para confirmar
+  confirmAccount(
+    @Param('token') token: string){
+    return this.authService.confirmAccount(token)
+  }
+
+  
 
 
 

@@ -3,7 +3,7 @@ import { Profile } from "src/profile/entities/profile.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
-
+export type Role = 'admin' | 'user'
 
 
 @Entity('users')
@@ -24,8 +24,8 @@ export class User {
     @Column('text')
     fullName!: string
 
-    @Column('bool', {
-        default: true
+    @Column('bool', { //verificacion por mail
+        default: false
     })
     isActive!: boolean
 
@@ -34,7 +34,7 @@ export class User {
         default:['user']
     }
     )
-    roles!: string[]
+    roles!: Role[]
 
 
     //relacionamos el usuario con varios productos

@@ -7,6 +7,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({ 
   imports: [
@@ -31,6 +32,7 @@ import { ProfileModule } from './profile/profile.module';
     CategoriesModule,
     AuthModule,
     ProfileModule,
+    MailModule,
   ]
 })
 export class AppModule {}
